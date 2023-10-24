@@ -8,7 +8,6 @@ const { ObjectId } = require("mongodb");
 const User = require('../models/userModel.js');
 const Wallet = require('../models/walletHistoryModel.js');
 const { v4: uuidv4 } = require('uuid');
-const nodemailer = require('nodemailer');
 
 //stripe trial
 let tempBookingData = null;

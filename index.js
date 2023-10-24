@@ -28,7 +28,7 @@ const chatRoute = require('./routes/chatRoute.js');
 const messageRoute = require('./routes/messageRoute.js');
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
   res.send("BackEnd is Running");
 });
