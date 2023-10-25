@@ -124,9 +124,9 @@ const createStripeCheckout = async (req, res, next) => {
 //   res.send().end();
 // };
 
-const createWebhook = (req, res, next) => {  
+const createWebhook = (req, res, next) => {  console.log('entered webhook');
   let signInSecret = `${process.env.WEBHOOK_SECRET}`; 
-  const payload = req.body;
+  const payload = req.body; console.log('req.body=',payload);
   const sig = req.headers['stripe-signature']; 
   let event;
   try {
@@ -135,7 +135,7 @@ const createWebhook = (req, res, next) => {
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
-  data = event.data.object; console.log('data', data);
+  data = event.data.object; 
   // Handle the event
   if (event.type === "payment_intent.succeeded") {
     stripe.customers.retrieve(data.customer)
