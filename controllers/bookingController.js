@@ -23,7 +23,7 @@ const createStripeCheckout = async (req, res, next) => {
       total:price
     } 
   });
-  const YOUR_DOMAIN = 'http://localhost:3000';
+  const YOUR_DOMAIN = 'https://poshboonline.netlify.app';
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
