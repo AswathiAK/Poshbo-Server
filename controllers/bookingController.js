@@ -122,7 +122,7 @@ const createWebhook = (req, res, next) => {
       })
       .catch(err => next(err));
   }
-  res.send().end();
+  // res.send().end();
 };
 
 // const createWebhook = (req, res, next) => {  console.log('entered webhook');
