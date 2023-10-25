@@ -35,13 +35,14 @@ app.get('/', (req, res) => {
 
 //Middlewares
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://poshbo-admin.netlify.app','https://poshboonline.netlify.app'],
+  origin: ['https://poshbo-admin.netlify.app','https://poshboonline.netlify.app'],
   credentials: true,
 }));
 app.use(express.json({limit:"500mb"}));
 app.use(cookieParser());
 app.use(express.static('public'));  
 app.use(express.urlencoded({ extended: true, limit:"500mb" }));
+app.use('/webhook', express.raw({ type: 'application/json' }));
 
 //Routes
 app.use('/users', userRoute);
@@ -71,7 +72,7 @@ const server = app.listen(PORT, () => {
 //Socket connection establishment
 const io = require("socket.io")(server, {
   cors: {
-    origin: 'http://localhost:3000'
+    origin: 'https://poshboonline.netlify.app'
   }
 });
 let onlineUsers = [];
