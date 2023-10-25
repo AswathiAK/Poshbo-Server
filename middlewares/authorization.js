@@ -4,11 +4,12 @@ const createError = require('./errorHandling');
 const Hotel = require('../models/hotelModel');
 
 const verifyUserToken = (req, res, next) => {
-  const token = req.cookies.userToken; console.log('cookies',req.cookies);
+  const token = req.headers.authorization; 
   if (!token) {
     return next(createError(401, "You are not authenticated"));
   }
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  const tokenWithoutBearer = token.replace("Bearer ", "");
+  jwt.verify(tokenWithoutBearer, process.env.JWT_SECRET, (err, user) => {
     if (err) return next(createError(403, "Token is not valid"));
     req.user = user;
     next();
