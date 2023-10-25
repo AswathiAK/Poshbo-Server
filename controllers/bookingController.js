@@ -27,8 +27,8 @@ const createBooking = async (customer, data, tempBookingData, next) => {
       isWalletApplied,
       balanceTotal,
       paymentMethod:'card',
-      paymentId: data.payment_intent,
-      paymentStatus: data.payment_status,
+      paymentId: data.payment_method,
+      paymentStatus: data.status,
     });
     const saveBooking = await bookHotel.save();
     await Promise.all(selectedRooms.map(async (roomId) => {
