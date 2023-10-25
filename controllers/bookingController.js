@@ -124,7 +124,7 @@ const createBooking = async (customer, data, tempBookingData, next) => {
 //   res.send().end();
 // };
 
-const createWebhook = (req, res, next) => {  
+const createWebhook = (req, res, next) => {  console.log('creating webhook...');
   const endpointSecret = `${process.env.WEBHOOK_SECRET}`; 
   const payload = req.body;
   const sig = req.headers['stripe-signature']; console.log('payload,sig',payload,sig);
