@@ -93,26 +93,57 @@ const createBooking = async (customer, data, tempBookingData, next) => {
   }
 };
 
-// let endpointSecret;
-const endpointSecret = process.env.WEBHOOK_SECRET;
+// // let endpointSecret;
+// const endpointSecret = process.env.WEBHOOK_SECRET;
+// const createWebhook = (req, res, next) => {
+//   const sig = req.headers['stripe-signature'];
+//   let eventType;
+//   let data;
+//   if (endpointSecret) {
+//     let event;
+//     try {
+//       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+//     } catch (err) {
+//       res.status(400).send(`Webhook Error: ${err.message}`);
+//       return;
+//     }
+//     data = event.data.object;
+//     eventType = event.type;
+//   } else {
+//     data = req.body.data.object;
+//     eventType = req.body.type;
+//   }
+//   // Handle the event
+//   if (eventType==='checkout.session.completed') {
+//     stripe.customers.retrieve(data.customer)
+//       .then(customer => {
+//         createBooking(customer, data, tempBookingData, next);
+//       })
+//       .catch(err => next(err));
+//   }
+//   res.send().end();
+// };
+
 const createWebhook = (req, res, next) => {  
+  const endpointSecret = `${process.env.WEBHOOK_SECRET}`;
+  const payload = req.body;
   const sig = req.headers['stripe-signature'];
   let eventType;
   let data;
-  if (endpointSecret) {
+  // if (endpointSecret) {
     let event;
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
     } catch (err) {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     } 
     data = event.data.object;
     eventType = event.type;
-  } else {
-    data = req.body.data.object;
-    eventType = req.body.type;      
-  } 
+  // } else {
+  //   data = req.body.data.object;
+  //   eventType = req.body.type;      
+  // } 
   // Handle the event
   if (eventType==='checkout.session.completed') {
     stripe.customers.retrieve(data.customer)
@@ -123,6 +154,7 @@ const createWebhook = (req, res, next) => {
   }
   res.send().end();
 };
+
 
 //booking with wallet only
 const createBookingWithWallet = async (req, res, next) => {
