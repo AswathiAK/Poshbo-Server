@@ -9,47 +9,6 @@ const User = require('../models/userModel.js');
 const Wallet = require('../models/walletHistoryModel.js');
 const { v4: uuidv4 } = require('uuid');
 
-//stripe trial
-let tempBookingData = null;
-const createStripeCheckout = async (req, res, next) => {
-  const { user, hotelId, price, bookingData } = req.body; 
-  tempBookingData = bookingData; 
-  const hotel = await Hotel.findById(hotelId); 
-  const customer = await stripe.customers.create({
-    metadata: {
-      userId: user._id,
-      name:user.name,
-      property: hotel.name,
-      total:price
-    } 
-  });
-  const YOUR_DOMAIN = 'https://poshboonline.netlify.app';
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: 'inr',
-            product_data: {
-              name: hotel.name
-            },
-            unit_amount: price * 100
-          },
-          quantity: 1
-        }
-      ],
-      customer:customer.id,
-      mode: 'payment',
-      success_url: `${YOUR_DOMAIN}/account/success`,
-      cancel_url: `${YOUR_DOMAIN}/${hotelId}`,
-    }); 
-    res.json({ id: session.id });
-  } catch (error) {
-    next(error);
-  }
-};
-
 //wallet vachullacreatebookinginstripe
 const createBooking = async (customer, data, tempBookingData, next) => {
   const { hotel, checkInDate, checkOutDate,
@@ -93,6 +52,47 @@ const createBooking = async (customer, data, tempBookingData, next) => {
   }
 };
 
+//stripe trial
+let tempBookingData = null;
+const createStripeCheckout = async (req, res, next) => {
+  const { user, hotelId, price, bookingData } = req.body; 
+  tempBookingData = bookingData; 
+  const hotel = await Hotel.findById(hotelId); 
+  const customer = await stripe.customers.create({
+    metadata: {
+      userId: user._id,
+      name:user.name,
+      property: hotel.name,
+      total:price
+    } 
+  });
+  const YOUR_DOMAIN = 'https://poshboonline.netlify.app';
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: 'inr',
+            product_data: {
+              name: hotel.name
+            },
+            unit_amount: price * 100
+          },
+          quantity: 1
+        }
+      ],
+      customer:customer.id,
+      mode: 'payment',
+      success_url: `${YOUR_DOMAIN}/account/success`,
+      cancel_url: `${YOUR_DOMAIN}/${hotelId}`,
+    }); 
+    res.json({ id: session.id });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // // let endpointSecret;
 // const endpointSecret = process.env.WEBHOOK_SECRET;
 // const createWebhook = (req, res, next) => {
@@ -125,34 +125,26 @@ const createBooking = async (customer, data, tempBookingData, next) => {
 // };
 
 const createWebhook = (req, res, next) => {  console.log('creating webhook...');
-  const endpointSecret = `${process.env.WEBHOOK_SECRET}`; 
+  let signInSecret = `${process.env.WEBHOOK_SECRET}`; 
   const payload = req.body;
-  const sig = req.headers['stripe-signature']; console.log('payload,sig',payload,sig);
-  let eventType;
-  let data;
-  // if (endpointSecret) {
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-    } catch (err) {
-      res.status(400).send(`Webhook Error: ${err.message}`);
-      return;
-    } 
-    data = event.data.object; console.log('data',data);
-    eventType = event.type;console.log('eventype',eventType);
-  // } else {
-  //   data = req.body.data.object;
-  //   eventType = req.body.type;      
-  // } 
+  const sig = req.headers['stripe-signature']; console.log('payload,sig', payload, sig);
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(payload, sig, signInSecret); console.log('event',event);
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+  data = event.data.object; console.log('data', data);
   // Handle the event
-  if (eventType==='checkout.session.completed') {
+  if (event.type === "payment_intent.succeeded") {
     stripe.customers.retrieve(data.customer)
       .then(customer => { console.log('customer',customer);
         createBooking(customer, data, tempBookingData, next);
       })
       .catch(err => next(err));
   }
-  res.send().end();
+  // res.send().end();
 };
 
 
