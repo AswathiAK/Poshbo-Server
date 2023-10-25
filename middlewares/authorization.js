@@ -20,7 +20,8 @@ const verifyAdminToken = (req, res, next) => {
   if (!token) {
     return next(createError(401, "You are not authenticated"));
   }
-  jwt.verify(token, process.env.JWT_ADMINSECRET, (err, admin) => { 
+  const tokenWithoutBearer = token.replace("Bearer ", "");
+  jwt.verify(tokenWithoutBearer, process.env.JWT_ADMINSECRET, (err, admin) => { 
     if (err) return next(createError(403, "Token is not valid"));
     req.admin = admin; 
     next();
