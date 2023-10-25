@@ -16,7 +16,7 @@ const verifyUserToken = (req, res, next) => {
 };
 
 const verifyAdminToken = (req, res, next) => {
-  const token = req.headers.authorization
+  const token = req.headers.authorization; console.log('token',token);
   if (!token) {
     return next(createError(401, "You are not authenticated"));
   }
