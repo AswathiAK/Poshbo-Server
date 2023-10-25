@@ -138,8 +138,8 @@ const createWebhook = (req, res, next) => {
       res.status(400).send(`Webhook Error: ${err.message}`);
       return;
     } 
-    data = event.data.object;
-    eventType = event.type;
+    data = event.data.object; console.log('data',data);
+    eventType = event.type;console.log('eventype',eventType);
   // } else {
   //   data = req.body.data.object;
   //   eventType = req.body.type;      
@@ -147,7 +147,7 @@ const createWebhook = (req, res, next) => {
   // Handle the event
   if (eventType==='checkout.session.completed') {
     stripe.customers.retrieve(data.customer)
-      .then(customer => {
+      .then(customer => { console.log('customer',customer);
         createBooking(customer, data, tempBookingData, next);
       })
       .catch(err => next(err));
