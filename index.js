@@ -38,11 +38,11 @@ app.use(cors({
   origin: ['https://poshbo-admin.netlify.app','https://poshboonline.netlify.app'],
   credentials: true,
 }));
-app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json({limit:"500mb"}));
 app.use(cookieParser());
 app.use(express.static('public'));  
 app.use(express.urlencoded({ extended: true, limit:"500mb" }));
+app.use('/bookings/webhook', express.raw({ type: 'application/json' }));
 
 //Routes
 app.use('/users', userRoute);
