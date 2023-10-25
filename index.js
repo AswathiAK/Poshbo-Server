@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 
 //Middlewares
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001','https://poshbo-admin.netlify.app'],
+  origin: ['http://localhost:3000', 'https://poshbo-admin.netlify.app','https://poshboonline.netlify.app/'],
   credentials: true,
 }));
 app.use(express.json({limit:"500mb"}));
