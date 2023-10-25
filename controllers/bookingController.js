@@ -126,7 +126,7 @@ const createStripeCheckout = async (req, res, next) => {
 
 const createWebhook = (req, res, next) => {  console.log('entered webhook');
   let signInSecret = `${process.env.WEBHOOK_SECRET}`; 
-  const payload = req.body; console.log('req.body=',payload);
+  const payload = req.body; console.log('req.rawbody=',req.rawBody);
   const sig = req.headers['stripe-signature']; 
   let event;
   try {
