@@ -114,7 +114,7 @@ const createWebhook = (req, res, next) => {
     eventType = req.body.type;
   }
   // Handle the event
-  if (eventType==='payment_intent.succeeded') {
+  if (eventType==='checkout.session.completed') {
     stripe.customers.retrieve(data.customer)
       .then(customer => {
         createBooking(customer, data, tempBookingData, next);
