@@ -125,9 +125,9 @@ const createBooking = async (customer, data, tempBookingData, next) => {
 // };
 
 const createWebhook = (req, res, next) => {  
-  const endpointSecret = `${process.env.WEBHOOK_SECRET}`;
+  const endpointSecret = `${process.env.WEBHOOK_SECRET}`; 
   const payload = req.body;
-  const sig = req.headers['stripe-signature'];
+  const sig = req.headers['stripe-signature']; console.log('payload,sig',payload,sig);
   let eventType;
   let data;
   // if (endpointSecret) {
