@@ -93,59 +93,59 @@ const createStripeCheckout = async (req, res, next) => {
   }
 };
 
-// // let endpointSecret;
+let endpointSecret;
 // const endpointSecret = process.env.WEBHOOK_SECRET;
-// const createWebhook = (req, res, next) => {
-//   const sig = req.headers['stripe-signature'];
-//   let eventType;
-//   let data;
-//   if (endpointSecret) {
-//     let event;
-//     try {
-//       event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-//     } catch (err) {
-//       res.status(400).send(`Webhook Error: ${err.message}`);
-//       return;
-//     }
-//     data = event.data.object;
-//     eventType = event.type;
-//   } else {
-//     data = req.body.data.object;
-//     eventType = req.body.type;
-//   }
-//   // Handle the event
-//   if (eventType==='checkout.session.completed') {
-//     stripe.customers.retrieve(data.customer)
-//       .then(customer => {
-//         createBooking(customer, data, tempBookingData, next);
-//       })
-//       .catch(err => next(err));
-//   }
-//   res.send().end();
-// };
-
-const createWebhook = (req, res, next) => {  console.log('entered webhook');
-  let signInSecret = `${process.env.WEBHOOK_SECRET}`; 
-  const payload = req.body; console.log('req.rawbody=',req.rawBody);
-  const sig = req.headers['stripe-signature']; 
-  let event;
-  try {
-    event = stripe.webhooks.constructEvent(payload, sig, signInSecret); 
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    return;
+const createWebhook = (req, res, next) => {
+  const sig = req.headers['stripe-signature'];
+  let eventType;
+  let data;
+  if (endpointSecret) {
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      res.status(400).send(`Webhook Error: ${err.message}`);
+      return;
+    }
+    data = event.data.object;
+    eventType = event.type;
+  } else {
+    data = req.body.data.object;
+    eventType = req.body.type;
   }
-  data = event.data.object; 
   // Handle the event
-  if (event.type === "payment_intent.succeeded") {
+  if (eventType==='payment_intent.succeeded') {
     stripe.customers.retrieve(data.customer)
-      .then(customer => { 
+      .then(customer => {
         createBooking(customer, data, tempBookingData, next);
       })
       .catch(err => next(err));
   }
-  // res.send().end();
+  res.send().end();
 };
+
+// const createWebhook = (req, res, next) => {  console.log('entered webhook');
+//   let signInSecret = process.env.WEBHOOK_SECRET; 
+//   const payload = req.body; 
+//   const sig = req.headers['stripe-signature']; 
+//   let event;
+//   try {
+//     event = stripe.webhooks.constructEvent(payload, sig, signInSecret); 
+//   } catch (err) {
+//     res.status(400).send(`Webhook Error: ${err.message}`);
+//     return;
+//   }
+//   data = event.data.object; 
+//   // Handle the event
+//   if (event.type === "payment_intent.succeeded") {
+//     stripe.customers.retrieve(data.customer)
+//       .then(customer => { 
+//         createBooking(customer, data, tempBookingData, next);
+//       })
+//       .catch(err => next(err));
+//   }
+//   // res.send().end();
+// };
 
 
 //booking with wallet only
