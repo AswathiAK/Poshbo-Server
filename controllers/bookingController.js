@@ -124,13 +124,13 @@ const createStripeCheckout = async (req, res, next) => {
 //   res.send().end();
 // };
 
-const createWebhook = (req, res, next) => {  console.log('creating webhook...');
+const createWebhook = (req, res, next) => {  c
   let signInSecret = `${process.env.WEBHOOK_SECRET}`; 
   const payload = req.body;
-  const sig = req.headers['stripe-signature']; console.log('payload,sig', payload, sig);
+  const sig = req.headers['stripe-signature']; 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(payload, sig, signInSecret); console.log('event',event);
+    event = stripe.webhooks.constructEvent(payload, sig, signInSecret); 
   } catch (err) {
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
@@ -139,7 +139,7 @@ const createWebhook = (req, res, next) => {  console.log('creating webhook...');
   // Handle the event
   if (event.type === "payment_intent.succeeded") {
     stripe.customers.retrieve(data.customer)
-      .then(customer => { console.log('customer',customer);
+      .then(customer => { 
         createBooking(customer, data, tempBookingData, next);
       })
       .catch(err => next(err));
