@@ -91,7 +91,8 @@ const userLogin = async (req, res, next) => {
           { expiresIn: "2d" },
           (err, token) => {
             if (err) throw err;
-            res.status(200).cookie('userToken', token).json({ message: "Login Successfull", ...otherDetails });
+            // res.status(200).cookie('userToken', token).json({ message: "Login Successfull", ...otherDetails });
+            res.status(200).cookie('userToken', token, { secure: true }).json({ message: "Login Successfull", ...otherDetails });
           }
         );
       }      
