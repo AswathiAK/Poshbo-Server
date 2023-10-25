@@ -17,7 +17,7 @@ const adminLogin = async (req, res, next) => {
         { expiresIn: "2d" },
         (err, token) => {
           if (err) throw err;
-          res.status(200).cookie('adminToken', token).json({ message: "Login Successfull", adminEmail });
+          res.status(200).cookie('adminToken', token).json({ message: "Login Successfull",token});
         }
       );
     } else {
