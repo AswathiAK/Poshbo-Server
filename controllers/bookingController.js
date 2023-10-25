@@ -113,10 +113,11 @@ const createWebhook = (req, res, next) => {
     data = req.body.data.object;
     eventType = req.body.type;
   }
+  console.log('req.body=',req.body);
   // Handle the event
-  if (eventType==='checkout.session.completed') {
+  if (eventType==='checkout.session.completed') { console.log('hello');
     stripe.customers.retrieve(data.customer)
-      .then(customer => {
+      .then(customer => { console.log('customer',customer);
         createBooking(customer, data, tempBookingData, next);
       })
       .catch(err => next(err));
