@@ -143,7 +143,7 @@ const updateProfile = async (req, res, next) => {
     } else {
       return next(createError(400, "User not found"));
     }
-  } catch (error) { console.log(error.message);
+  } catch (error) { 
     next(error);
   }
 };
